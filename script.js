@@ -1,4 +1,3 @@
-
 var ctx = $('#canvas')[0].getContext("2d");
 //draw a circle
 ctx.beginPath();
@@ -38,6 +37,10 @@ function draw() {
 	clear();
 	circle(x, y, 10);
 		
+	if (x + dx > WIDTH || x + dx < 0)
+		dx = -dx;
+  	if (y + dy > HEIGHT || y + dy < 0)
+    		dy = -dy;
 	x += dx;
 	y += dy;
 }
