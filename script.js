@@ -40,9 +40,20 @@ function clear() {
   ctx.clearRect(0, 0, WIDTH, HEIGHT);
 }
 
-function onKeyDown (evt) {
-	if (evt.keyCode == 39) rightDown = true;
+//set rightDown or leftDown if the right or left keys are down
+function onKeyDown(evt) {
+  if (evt.keyCode == 39) rightDown = true;
+  else if (evt.keyCode == 37) leftDown = true;
 }
+
+//and unset them when the right or left key is released
+function onKeyUp(evt) {
+  if (evt.keyCode == 39) rightDown = false;
+  else if (evt.keyCode == 37) leftDown = false;
+}
+
+$(document).keydown(onKeyDown);
+$(document).keyup(onKeyUp);
 
 function init() {
   ctx = $('#canvas') [0].getContext("2d");
@@ -98,20 +109,7 @@ function draw() {
 rightDown = false;
 leftDown = false;
 
-//set rightDown or leftDown if the right or left keys are down
-function onKeyDown(evt) {
-  if (evt.keyCode == 39) rightDown = true;
-  else if (evt.keyCode == 37) leftDown = true;
-}
 
-//and unset them when the right or left key is released
-function onKeyUp(evt) {
-  if (evt.keyCode == 39) rightDown = false;
-  else if (evt.keyCode == 37) leftDown = false;
-}
-
-$(document).keydown(onKeyDown);
-$(document).keyup(onKeyUp);
        
 function draw() {
   clear();
@@ -136,6 +134,25 @@ function draw() {
   x += dx;
   y += dy;
 }
+
+var bricks;
+var NROWS;
+var NCOLS;
+var BRICKWIDTH;
+var BRICKHEIGHT;
+var PADDING;
+
+function initbricks() {
+	NROWS = 5;
+	NCOLS = 5;
+	BRICKWIDTH = (WIDTH/NCOLS) - 1;
+	BRICKHEIGHT = 15;
+	PADDING = 1;
+	
+	bricks = new Array(NROWS);
+	for (i=0; i < NROWS
+
+
 
 init();
 init_paddle();
