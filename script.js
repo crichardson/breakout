@@ -116,7 +116,8 @@ function draw() {
   circle(x, y, 10);
 
   //move the paddle if left or right is currently pressed
-  if (rightDown && paddlex < (WIDTH - paddlew)) paddlex += 10;else if (leftDown && paddlex > 0) paddlex -= 10;
+  if (rightDown && paddlex < (WIDTH - paddlew)) paddlex += 10;
+  else if (leftDown && paddlex > 0) paddlex -= 10;
   rect(paddlex, HEIGHT-paddleh, paddlew, paddleh);
  
   if (x + dx > WIDTH || x + dx < 0)
@@ -135,6 +136,10 @@ function draw() {
   y += dy;
 }
 
+
+init();
+init_paddle();
+
 var bricks;
 var NROWS;
 var NCOLS;
@@ -150,9 +155,104 @@ function initbricks() {
 	PADDING = 1;
 	
 	bricks = new Array(NROWS);
-	for (i=0; i < NROWS
+	for (i=0; i < NROWS; i++) {
+    bricks[i] = new Array(NCOLS);
+    for (j=0; j < NCOLS; j++) {
+      bricks[i][j] = 1;
+    }
+  }
+}
+       
+function draw() {
+  clear();
+  circle(x, y, 10);
 
+  if (rightDown) paddlex += 5;
+  else if (leftDown) paddlex -= 5;
+  rect(paddlex, HEIGHT-paddleh, paddlew, paddleh);
 
+  //draw bricks
+  for (i=0; i < NROWS; i++) {
+    for (j=0; j < NCOLS; j++) {
+      if (bricks[i][j] == 1) {
+        rect((j * (BRICKWIDTH + PADDING)) + PADDING, 
+             (i * (BRICKHEIGHT + PADDING)) + PADDING,
+             BRICKWIDTH, BRICKHEIGHT);
+      }
+    }
+  }
 
+  //have we hit a brick?
+  rowheight = BRICKHEIGHT + PADDING;
+  colwidth = BRICKWIDTH + PADDING;
+  row = Math.floor(y/rowheight);
+  col = Math.floor(x/colwidth);
+  //if so, reverse the ball and mark the brick as broken
+  if (y < NROWS * rowheight && row >= 0 && col >= 0 && bricks[row][col] == 1) {
+    dy = -dy;
+    bricks[row][col] = 0;
+  }
+ 
+  if (x + dx > WIDTH || x + dx < 0)
+    dx = -dx;
+
+  if (y + dy < 0)
+    dy = -dy;
+  else if (y + dy > HEIGHT) {
+    if (x > paddlex && x < paddlex + paddlew)
+      dy = -dy;
+    else
+      clearInterval(intervalId);
+  }
+ 
+  x += dx;
+  y += dy;
+}
+var ballr = 10;
+var rowcolors = ["FFF00A", "#FFF0AA", "#FFF00A", "#FFF0AA", "#FFF00A"];
+var paddlecolor = "#FFFFFF";
+var ballcolor = "#FFFFFF";
+var backcolor = "#00F000";
+ 
+function draw() {
+  ctx.fillStyle = backcolor;
+  clear();
+  ctx.fillStyle = ballcolor;
+  circle(x, y, ballr);
+ 
+  if (rightDown) paddlex += 5;
+  else if (leftDown) paddlex -= 5;
+  ctx.fillStyle = paddlecolor;
+  rect(paddlex, HEIGHT-paddleh, paddlew, paddleh);
+  
+  rowheight = BRICKHEIGHT + PADDING;
+  colwidth = BRICKWIDTH + PADDING;
+  row = Math.floor(y/rowheight);
+  col = Math.floor(x/colwidth);
+  //reverse the ball and mark the brick as broken
+  if (y < NROWS * rowheight && row >= 0 && col >= 0 && bricks[row][col] == 1) {
+    dy = -dy;
+    bricks[row][col] = 0;
+  }
+ 
+  if (x + dx + ballr > WIDTH || x + dx - ballr < 0)
+    dx = -dx;
+ 
+  if (y + dy - ballr < 0)
+    dy = -dy;
+  else if (y + dy + ballr > HEIGHT - paddleh) {
+    if (x > paddlex && x < paddlex + paddlew) {
+      //move the ball differently based on where it hit the paddle
+      dx = 8 * ((x-(paddlex+paddlew/2))/paddlew);
+      dy = -dy;
+    }
+    else if (y + dy + ballr > HEIGHT)
+      clearInterval(intervalId);
+  }
+ 
+  x += dx;
+  y += dy;
+}
+ 
 init();
-init_paddle();
+initbricks();
